@@ -2,6 +2,17 @@
 
 COMMAND_NAME=dcpr
 
+VERSION=0.0.1
+
+dcpr () {
+    if [ ! -f $1 ] || [ -z $1 ]; then
+        echo "You need to provides the first argument to be the path for docker-compose.yml file."
+        exit 1
+    fi
+
+    echo "Lets start this!"
+}
+
 ## detect if being sourced and
 ## export if so else execute
 ## main function with args
