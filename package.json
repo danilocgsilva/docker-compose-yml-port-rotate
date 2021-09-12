@@ -1,0 +1,8 @@
+{
+    "name": "dcpr",
+    "version": "0.0.1",
+    "description": "Rotates docker ports entries in a docker-compose.yml file",
+    "scripts": [ "dcpr" ],
+    "install": "make install"
+  }
+  
