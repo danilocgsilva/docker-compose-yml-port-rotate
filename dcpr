@@ -1,0 +1,12 @@
+#!/bin/bash
+
+COMMAND_NAME=dcpr
+
+## detect if being sourced and
+## export if so else execute
+## main function with args
+if [[ ${BASH_SOURCE[0]} != $0 ]]; then
+  export -f ${COMMAND_NAME}
+else
+  ${COMMAND_NAME} "${@}"
+fi
