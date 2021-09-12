@@ -4,6 +4,85 @@ COMMAND_NAME=dcpr
 
 VERSION=0.0.1
 
+# This function needs an argument pointing to a file, where the analysis will
+#   happen
+# Counts how many lines exists with port data 
+#
+# Receives a file path with content
+# Returns a number
+span_lines_for_ports() {
+    FILE=$1
+
+    next_line_number() {
+        OFFSET_LINE=$1
+        FILE=$2
+        REAL_OFFSET_LINE=$(expr $OFFSET_LINE + 1)
+        starting_spaces_count "$(sed -n $REAL_OFFSET_LINE\p $FILE)"
+    }
+
+    HEADER_LINE_NUMBER=$(expr $(find_ports_starting_line $FILE) + 1)
+    HEADER_STRING=$(sed -n $HEADER_LINE_NUMBER\p $FILE)
+    HEADER_LINE_SPACING=$(starting_spaces_count "$HEADER_STRING")
+    LOOP_NUMBER=$HEADER_LINE_NUMBER
+
+    SPAN_COUNT=0
+    while [ $(next_line_number $LOOP_NUMBER $FILE) -gt $HEADER_LINE_SPACING ]
+    do
+       LOOP_NUMBER=$(expr $LOOP_NUMBER + 1)
+       SPAN_COUNT=$(expr $SPAN_COUNT + 1)
+    done
+    
+    echo $SPAN_COUNT
+}
+
+# Receives string
+# Return number
+function starting_spaces_count() {
+    EXPRESSION="$1"
+    NON_STARTING_SPACES_COUNT=$(echo "$EXPRESSION" | sed "s/^[[:space:]]*//g" | wc -c)
+    FULL_COUNT=$(echo "$EXPRESSION" | wc -c)
+    expr $FULL_COUNT - $NON_STARTING_SPACES_COUNT
+}
+
+# Check where ports starts in line number
+#
+# Return a number
+find_ports_starting_line() {
+    IFS_OLD=$IFS
+    IFS=$'\n'
+
+    FILE=$1
+    COUNT=0
+    PORTS_STARTING_LINE=0
+    FILE_COUNT_LINES=$(cat $FILE | wc -l)
+
+    for i in $(seq $FILE_COUNT_LINES)
+    do
+        STRING_LOOP=$(sed -n $i\p $FILE)
+        if echo $STRING_LOOP | grep "ports:" > /dev/null 2>&1
+        then
+            PORTS_STARTING_LINE=$COUNT
+        fi
+        COUNT=$(expr $COUNT + 1)
+    done
+    
+    echo $PORTS_STARTING_LINE
+    IFS=$IFS_OLD
+}
+
+# Transform a port value entry to add the value to one, so does not
+#   conflits with the previous port
+#
+# Receives a string to have its ports values rotated
+# return string
+port_offset() {
+    INPUT="$1"
+    BASE=$(echo "$INPUT" | cut -f1 -d: | cut -f2 -d\")
+    PLUSVALUE=$(expr $BASE + 1)
+    echo "$INPUT" | sed "s/$BASE/$PLUSVALUE/1"
+}
+
+# main method
 dcpr () {
     if [ ! -f $1 ] || [ -z $1 ]; then
         echo "You need to provides the first argument to be the path for docker-compose.yml file."
