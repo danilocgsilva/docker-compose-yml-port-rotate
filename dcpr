@@ -48,6 +48,7 @@ function starting_spaces_count() {
 #
 # Return a number
 find_ports_starting_line() {
+    declare -a local OCORRENCIES_LINES
     IFS_OLD=$IFS
     IFS=$'\n'
 
@@ -65,8 +66,10 @@ find_ports_starting_line() {
         fi
         COUNT=$(expr $COUNT + 1)
     done
+
+    OCORRENCIES_LINES+=($PORTS_STARTING_LINE)
     
-    echo $PORTS_STARTING_LINE
+    echo "${OCORRENCIES_LINES[@]}"
     IFS=$IFS_OLD
 }
 

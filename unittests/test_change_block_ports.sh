@@ -20,7 +20,7 @@ test_find_ports_starting_line_2() {
 
 test_find_ports_starting_line_1() {
     echo '* test_find_ports_starting_line_1'
-    RESULTS=$(find_ports_starting_line mocks/mock_fragment_ports_at_1.txt)
+    RESULTS=($(find_ports_starting_line mocks/mock_fragment_ports_at_1.txt))
     EXPECTED_RESULTS=1
 
     this_assert $EXPECTED_RESULTS $RESULTS "$1"
@@ -31,7 +31,7 @@ test_find_ports_starting_line_0() {
     RESULTS=$(find_ports_starting_line mocks/mock_fragment_ports_at_0.txt)
     EXPECTED_RESULTS=0
 
-    this_assert $EXPECTED_RESULTS $RESULTS "$1"
+    this_assert $EXPECTED_RESULTS ${RESULTS[0]} "$1"
 }
 
 test_find_ports_starting_line_6() {
@@ -39,23 +39,23 @@ test_find_ports_starting_line_6() {
     RESULTS=$(find_ports_starting_line mocks/mock_fragment_ports_at_6.txt)
     EXPECTED_RESULTS=6
 
-    this_assert $EXPECTED_RESULTS $RESULTS "$1"
+    this_assert $EXPECTED_RESULTS ${RESULTS[0]} "$1"
 }
 
 test_find_ports_starting_line_15() {
     echo '* test_find_ports_starting_line_15'
-    RESULTS=$(find_ports_starting_line mocks/mock_larger_span_2.txt)
+    RESULTS=($(find_ports_starting_line mocks/mock_larger_span_2.txt))
     EXPECTED_RESULTS=15
 
-    this_assert $EXPECTED_RESULTS $RESULTS "$1"
+    this_assert $EXPECTED_RESULTS ${RESULTS[0]} "$1"
 }
 
 test_find_ports_starting_line_16() {
     echo '* test_find_ports_starting_line_16'
-    RESULTS=$(find_ports_starting_line mocks/mock_larger_span_2_ws.txt)
+    RESULTS=($(find_ports_starting_line mocks/mock_larger_span_2_ws.txt))
     EXPECTED_RESULTS=16
 
-    this_assert $EXPECTED_RESULTS $RESULTS "$1"
+    this_assert $EXPECTED_RESULTS ${RESULTS[0]} "$1"
 }
 
 test_span_lines_for_ports_1() {
