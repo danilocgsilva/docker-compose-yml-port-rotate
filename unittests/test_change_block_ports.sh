@@ -58,6 +58,14 @@ test_find_ports_starting_line_16() {
     this_assert $EXPECTED_RESULTS ${RESULTS[0]} "$1"
 }
 
+test_find_ports_starting_line_8_second() {
+    echo '* mock_fragment_ports_at_8_21.txt'
+    RESULTS=($(find_ports_starting_line mocks/mock_fragment_ports_at_8_21.txt))
+    EXPECTED_RESULTS=8
+
+    this_assert $EXPECTED_RESULTS ${RESULTS[1]} "$1"
+}
+
 test_span_lines_for_ports_1() {
     echo '* test_span_lines_for_ports_1'    
 
@@ -103,14 +111,15 @@ test_span_lines_for_ports_5() {
     this_assert $EXPECTED_RESULTS $RESULTS "$1"
 }
 
-test_find_ports_starting_line_2 $DOTFILE
-test_find_ports_starting_line_1 $DOTFILE
-test_find_ports_starting_line_0 $DOTFILE
-test_find_ports_starting_line_6 $DOTFILE
-test_find_ports_starting_line_15 $DOTFILE
-test_find_ports_starting_line_16 $DOTFILE
-test_span_lines_for_ports_1 $DOTFILE
-test_span_lines_for_ports_2 $DOTFILE
-test_span_lines_for_ports_3 $DOTFILE
-test_span_lines_for_ports_4 $DOTFILE
-test_span_lines_for_ports_5 $DOTFILE
+# test_find_ports_starting_line_2 $DOTFILE
+# test_find_ports_starting_line_1 $DOTFILE
+# test_find_ports_starting_line_0 $DOTFILE
+# test_find_ports_starting_line_6 $DOTFILE
+# test_find_ports_starting_line_15 $DOTFILE
+# test_find_ports_starting_line_16 $DOTFILE
+# test_span_lines_for_ports_1 $DOTFILE
+# test_span_lines_for_ports_2 $DOTFILE
+# test_span_lines_for_ports_3 $DOTFILE
+# test_span_lines_for_ports_4 $DOTFILE
+# test_span_lines_for_ports_5 $DOTFILE
+test_find_ports_starting_line_8_second $DOTFILE
