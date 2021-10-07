@@ -54,7 +54,7 @@ find_ports_starting_line() {
 
     FILE=$1
     COUNT=0
-    PORTS_STARTING_LINE=0
+    PORTS_STARTING_LINE=""
     FILE_COUNT_LINES=$(cat $FILE | wc -l)
 
     for i in $(seq $FILE_COUNT_LINES)
@@ -62,14 +62,14 @@ find_ports_starting_line() {
         STRING_LOOP=$(sed -n $i\p $FILE)
         if echo $STRING_LOOP | grep "ports:" > /dev/null 2>&1
         then
-            PORTS_STARTING_LINE=$COUNT
+            PORTS_STARTING_LINE=$PORTS_STARTING_LINE$COUNT,
         fi
         COUNT=$(expr $COUNT + 1)
     done
 
-    OCORRENCIES_LINES+=($PORTS_STARTING_LINE)
-    
-    echo "${OCORRENCIES_LINES[@]}"
+    PORTS_STARTING_LINE=$(echo $PORTS_STARTING_LINE | sed 's/.$//')
+
+    echo $PORTS_STARTING_LINE
     IFS=$IFS_OLD
 }
 
