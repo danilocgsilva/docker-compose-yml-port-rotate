@@ -41,7 +41,7 @@ test_port_offset4() {
   this_assert "$DESTINY_STRING" "$RESULTS" "$1"
 }
 
-test_port_offset1 $DOTFILE
-test_port_offset2 $DOTFILE
-test_port_offset3 $DOTFILE
+# test_port_offset1 $DOTFILE
+# test_port_offset2 $DOTFILE
+# test_port_offset3 $DOTFILE
 test_port_offset4 $DOTFILE

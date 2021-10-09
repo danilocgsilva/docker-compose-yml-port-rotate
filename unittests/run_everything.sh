@@ -6,9 +6,8 @@ else
     DOTFILE=$1
 fi
 
-# source ../dcpr
-
 for i in $(find . -type f | grep -iE "^\./test.*\.sh")
 do
+    echo "--- Starting to test $i"
     $i $DOTFILE
 done

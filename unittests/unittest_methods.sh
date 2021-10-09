@@ -2,7 +2,7 @@
 
 this_assert() {
 
-    if [ -z $1 ] || [ -z $2 ] || [ -z $3 ]; then
+    if [ -z "$1" ] || [ -z "$2" ] || [ -z "$3" ]; then
         echo "Cannot proceed. this_assert is missing parameters. You need at least three: the expected, the result and the unittest file to store the result. Check if some argument are blank"
         exit
     fi
