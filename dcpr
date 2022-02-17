@@ -10,31 +10,32 @@ VERSION=0.0.1
 #
 # Receives a file path with content
 # Returns a number
-span_lines_for_ports() {
-    FILE=$1
+#span_lines_for_ports() {
+#    FILE=$1
+#
+#    next_line_number() {
+#        OFFSET_LINE=$1
+#        FILE=$2
+#        REAL_OFFSET_LINE=$(expr $OFFSET_LINE + 1)
+#        starting_spaces_count "$(sed -n $REAL_OFFSET_LINE\p $FILE)"
+#    }
+#
+#    HEADER_LINE_NUMBER=$(expr $(find_ports_starting_line $FILE) + 1)
+#    HEADER_STRING=$(sed -n $HEADER_LINE_NUMBER\p $FILE)
+#    HEADER_LINE_SPACING=$(starting_spaces_count "$HEADER_STRING")
+#    LOOP_NUMBER=$HEADER_LINE_NUMBER
+#
+#    SPAN_COUNT=0
+#    while [ $(next_line_number $LOOP_NUMBER $FILE) -gt $HEADER_LINE_SPACING ]
+#    do
+#       LOOP_NUMBER=$(expr $LOOP_NUMBER + 1)
+#       SPAN_COUNT=$(expr $SPAN_COUNT + 1)
+#    done
+#    
+#    echo $SPAN_COUNT
+#}
 
-    next_line_number() {
-        OFFSET_LINE=$1
-        FILE=$2
-        REAL_OFFSET_LINE=$(expr $OFFSET_LINE + 1)
-        starting_spaces_count "$(sed -n $REAL_OFFSET_LINE\p $FILE)"
-    }
-
-    HEADER_LINE_NUMBER=$(expr $(find_ports_starting_line $FILE) + 1)
-    HEADER_STRING=$(sed -n $HEADER_LINE_NUMBER\p $FILE)
-    HEADER_LINE_SPACING=$(starting_spaces_count "$HEADER_STRING")
-    LOOP_NUMBER=$HEADER_LINE_NUMBER
-
-    SPAN_COUNT=0
-    while [ $(next_line_number $LOOP_NUMBER $FILE) -gt $HEADER_LINE_SPACING ]
-    do
-       LOOP_NUMBER=$(expr $LOOP_NUMBER + 1)
-       SPAN_COUNT=$(expr $SPAN_COUNT + 1)
-    done
-    
-    echo $SPAN_COUNT
-}
-
+# Counts the number of blank spaces before start anything
 # Receives string
 # Return number
 function starting_spaces_count() {
@@ -73,6 +74,19 @@ find_ports_starting_line() {
     IFS=$IFS_OLD
 }
 
+# Count how many lines within same indentation exists bellow given given
+#   start line number.
+#
+# Receives two arguments:
+#   - a file to be read
+#   - a number, to be the header line
+span_from() {
+    FILE=$1
+    HEADER_LINE_NUMBER=$2
+    HEADER_LINE_CONTENT=$(sed -n $HEADER_LINE_NUMBER\p $FILE)
+    echo "$HEADER_LINE_CONTENT"
+}
+
 # Transform a port value entry to add the value to one, so does not
 #   conflits with the previous port
 #
@@ -98,14 +112,23 @@ dcpr () {
     fi
 
     HEADER_LINE_NUMBER=$(find_ports_starting_line $FILE_DOCKER)
-    SPAN_LINES=$(span_lines_for_ports $FILE_DOCKER)
-    for i in $(seq $SPAN_LINES); do
-        LINE_NUMBER_TARGET=$(expr $i + $HEADER_LINE_NUMBER + 1)
-        ITERATION_CONTENT=$(sed -n $LINE_NUMBER_TARGET\p $FILE_DOCKER)
-        ITERATION_CONTENT=$(echo $ITERATION_CONTENT | cut -f2 -d" ")
-        RENEWED_CONTENT=$(port_offset $ITERATION_CONTENT)
-        sed -i $LINE_NUMBER_TARGET\s/$ITERATION_CONTENT/$RENEWED_CONTENT/1 $FILE_DOCKER
+
+    IFS=',' read -r -a HEADER_LINES_ARRAY <<< $HEADER_LINE_NUMBER
+
+    for HEADER_LINE_NUMBER in "${HEADER_LINES_ARRAY[@]}"
+    do
+        span_from $FILE_DOCKER $(($HEADER_LINE_NUMBER + 1)) >> /tmp/debug
     done
+
+    # SPAN_LINES=$(span_lines_for_ports $FILE_DOCKER)
+    # echo "Span lines: " $SPAN_LINES " ----" >> /tmp/debug
+    # for i in $(seq $SPAN_LINES); do
+    #     LINE_NUMBER_TARGET=$(expr $i + $HEADER_LINE_NUMBER + 1)
+    #     ITERATION_CONTENT=$(sed -n $LINE_NUMBER_TARGET\p $FILE_DOCKER)
+    #     ITERATION_CONTENT=$(echo $ITERATION_CONTENT | cut -f2 -d" ")
+    #     RENEWED_CONTENT=$(port_offset $ITERATION_CONTENT)
+    #     sed -i $LINE_NUMBER_TARGET\s/$ITERATION_CONTENT/$RENEWED_CONTENT/1 $FILE_DOCKER
+    # done
 }
 
 ## detect if being sourced and
